@@ -134,7 +134,7 @@ if file_formato01:
                 # Ensure the output directory exists
                 os.makedirs(output_path, exist_ok=True)
 
-                # Save uploaded images to the specified folder
+                # Save uploaded images to the working folder
                 Image.open(firma1_image).save(firma1)
                 Image.open(firma2_image).save(firma2)
                 Image.open(logo_image).save(logo)
