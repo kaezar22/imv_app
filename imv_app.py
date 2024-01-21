@@ -90,22 +90,23 @@ def generate_worksheet(sheet_name, start_row, start_column, num_checkmarks, outp
     workbook.save(output_path)
 
 # Streamlit app
-st.title("Excel Generator App")
+st.title("Generador de formato")
 
 # Step 1: Load the formato01.xlsx
-file_formato01 = st.file_uploader("Upload the formato01.xlsx file", type=["xlsx"])
+file_formato01 = st.file_uploader("SUBA EL ARCHIVO formato01.xlsx", type=["xlsx"])
 if file_formato01:
     # Step 2: Upload the images for firma1 and firma2
-    firma1_image = st.file_uploader("Upload the image for firma1", type=["png", "jpg", "jpeg"])
-    firma2_image = st.file_uploader("Upload the image for firma2", type=["png", "jpg", "jpeg"])
+    st.write('Asegurese de que las firmas sean alargadas y de fondo blanco')
+    firma1_image = st.file_uploader("SUBA LA FIRMA 1", type=["png", "jpg", "jpeg"])
+    firma2_image = st.file_uploader("SUBA LA FIRMA 2", type=["png", "jpg", "jpeg"])
     
     # Step 3: Upload the logo image
-    logo_image = st.file_uploader("Upload the logo image", type=["png", "jpg", "jpeg"])
+    logo_image = st.file_uploader("SUBA EL LOGO DE SU EMPRESA", type=["png", "jpg", "jpeg"])
 
     # Step 4: Choose start_date, end_date, and include_weekends
-    current_date = st.date_input("Choose the start date", datetime.now())
-    end_date = st.date_input("Choose the end date", datetime.now() + timedelta(days=30))
-    include_weekends = st.checkbox("Include Weekends", value=False)
+    current_date = st.date_input("Elija el PRIMER dia del Mes que requiere", datetime.now())
+    end_date = st.date_input("Elija la fecha final del formato", datetime.now() + timedelta(days=30))
+    include_weekends = st.checkbox("DESEA INCLUIR FINES DE SEMANA", value=False)
 
     # Step 5: Write the path for the output excel file
     output_file_path = st.text_input("Enter the path for the output excel file")
@@ -148,10 +149,11 @@ if file_formato01:
             resize_logo(logo, output_logo, logo_width, logo_height, transparent_bg=True)
 
             # Create a copy of the original file
-            with open(file_formato01.name, "rb") as f:
+            with file_formato01 as f:
+                content = f.read()
                 with open(output_file, "wb") as output_f:
-                    output_f.write(f.read())
-                    
+                        output_f.write(content)
+                        
             # Specifications for each sheet
             sheet_parameters = [
                 {"name": "AREAS DE TRABAJO", "start_row": 8, "start_column": 2, "num_checkmarks": 10},
@@ -169,3 +171,4 @@ if file_formato01:
             st.success("Excel file generated successfully.")
         else:
             st.warning("Please upload all required files and specify the output excel file path.")
+
