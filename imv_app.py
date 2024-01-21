@@ -124,7 +124,7 @@ if file_formato01:
 
             # Output path for the copied file and resized images
             output_path = os.path.dirname(output_file_path)
-            output_file = os.path.join(output_path, 'formatted_data2.xlsx')
+            output_file = output_file_path
 
             # File paths for images
             firma1 = os.path.join(output_path, 'firma1.png')
