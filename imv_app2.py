@@ -131,6 +131,9 @@ if file_formato01:
                 output_firma2 = os.path.join(output_path, 'resized_firma2.png')
                 output_logo = os.path.join(output_path, 'resized_logo.png')
 
+                # Ensure the output directory exists
+                os.makedirs(output_path, exist_ok=True)
+
                 # Save uploaded images to the specified folder
                 Image.open(firma1_image).save(firma1)
                 Image.open(firma2_image).save(firma2)
