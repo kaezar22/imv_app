@@ -7,9 +7,6 @@ import shutil
 import openpyxl
 from openpyxl.styles import Alignment
 
-# Define the base directory
-base_dir = os.path.abspath(os.path.dirname(__file__))
-
 def resize_image(input_path, output_path, desired_width_cm, desired_height_cm, transparent_bg=True):
     desired_width_px = int(desired_width_cm * 37.7952755906)
     desired_height_px = int(desired_height_cm * 37.7952755906)
@@ -40,12 +37,6 @@ def resize_logo(input_path, output_path, desired_width, desired_height, transpar
         new_logo.save(output_path)
 
 def generate_worksheet(sheet_name, start_row, start_column, num_checkmarks, output_path, output_firma1, output_firma2, output_logo, current_date, end_date, include_weekends):
-    # Use os.path.join for file paths
-    output_path = os.path.join(base_dir, output_path)
-    output_firma1 = os.path.join(base_dir, output_firma1)
-    output_firma2 = os.path.join(base_dir, output_firma2)
-    output_logo = os.path.join(base_dir, output_logo)
-
     workbook = openpyxl.load_workbook(output_path)
     sheet = workbook[sheet_name]
     
@@ -111,12 +102,12 @@ if file_formato01:
     end_date = st.date_input("Elija la fecha final del formato", datetime.now() + timedelta(days=30))
     include_weekends = st.checkbox("DESEA INCLUIR FINES DE SEMANA", value=False)
 
-    # Step 5: Write the path for the output excel file
-    output_file_path = st.text_input("Enter the path for the output excel file")
+    # Step 5: Write the path for the output directory
+    output_directory = st.text_input("Enter the path for the output directory")
 
     # Step 6: Create the output excel button
     if st.button("Generate Excel"):
-        if firma1_image and firma2_image and logo_image and output_file_path:
+        if firma1_image and firma2_image and logo_image and output_directory:
             # Desired width and height for resizing images
             desired_width_cm = 4.5
             desired_height_cm = 0.72
@@ -125,20 +116,21 @@ if file_formato01:
             logo_width = 195
             logo_height = 93
 
-            # Output path for the copied file and resized images
-            output_file = os.path.join(base_dir, output_file_path)
+            # Output paths for images and Excel file
+            output_path = output_directory
+            output_file = os.path.join(output_path, 'formatted_data2.xlsx')
 
             # File paths for images
-            firma1 = os.path.join(base_dir, 'firma1.png')
-            firma2 = os.path.join(base_dir, 'firma2.png')
-            logo = os.path.join(base_dir, 'logo.png')
+            firma1 = os.path.join(output_path, 'firma1.png')
+            firma2 = os.path.join(output_path, 'firma2.png')
+            logo = os.path.join(output_path, 'logo.png')
 
             # Output paths for resized images
-            output_firma1 = os.path.join(base_dir, 'resized_firma1.png')
-            output_firma2 = os.path.join(base_dir, 'resized_firma2.png')
-            output_logo = os.path.join(base_dir, 'resized_logo.png')
+            output_firma1 = os.path.join(output_path, 'resized_firma1.png')
+            output_firma2 = os.path.join(output_path, 'resized_firma2.png')
+            output_logo = os.path.join(output_path, 'resized_logo.png')
 
-            # Save uploaded images to the working folder
+            # Save uploaded images to the specified folder
             Image.open(firma1_image).save(firma1)
             Image.open(firma2_image).save(firma2)
             Image.open(logo_image).save(logo)
@@ -154,8 +146,8 @@ if file_formato01:
             with file_formato01 as f:
                 content = f.read()
                 with open(output_file, "wb") as output_f:
-                    output_f.write(content)
-                        
+                        output_f.write(content)
+
             # Specifications for each sheet
             sheet_parameters = [
                 {"name": "AREAS DE TRABAJO", "start_row": 8, "start_column": 2, "num_checkmarks": 10},
