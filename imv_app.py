@@ -164,11 +164,8 @@ if file_formato01:
                 {"name": "OFICINA", "start_row": 7, "start_column": 2, "num_checkmarks": 10}
             ]
 
-            # Generate worksheets for each sheet parameter
             for params in sheet_parameters:
                 generate_worksheet(params["name"], params["start_row"], params["start_column"], params["num_checkmarks"], output_file, output_firma1, output_firma2, output_logo, current_date, end_date, include_weekends)
 
             st.success("Excel file generated successfully.")
-        else:
-            st.warning("Please upload all required files and specify the output excel file path.")
-
+            st.text(f"Generated Excel file is stored at: {output_file}")
