@@ -108,58 +108,59 @@ if file_formato01:
     # Step 6: Create the output excel button
     if st.button("Generate Excel"):
         if firma1_image and firma2_image and logo_image and output_directory:
-            # Desired width and height for resizing images
-            desired_width_cm = 4.5
-            desired_height_cm = 0.72
+            try:
+                # Desired width and height for resizing images
+                desired_width_cm = 4.5
+                desired_height_cm = 0.72
 
-            # Desired width and height for resizing the logo
-            logo_width = 195
-            logo_height = 93
+                # Desired width and height for resizing the logo
+                logo_width = 195
+                logo_height = 93
 
-            # Output paths for images and Excel file
-            output_path = output_directory
-            output_file = os.path.join(output_path, 'formatted_data2.xlsx')
+                # Output paths for images and Excel file
+                output_path = output_directory
+                output_file = os.path.join(output_path, 'formatted_data2.xlsx')
 
-            # File paths for images
-            firma1 = os.path.join(output_path, 'firma1.png')
-            firma2 = os.path.join(output_path, 'firma2.png')
-            logo = os.path.join(output_path, 'logo.png')
+                # File paths for images
+                firma1 = os.path.join(output_path, 'firma1.png')
+                firma2 = os.path.join(output_path, 'firma2.png')
+                logo = os.path.join(output_path, 'logo.png')
 
-            # Output paths for resized images
-            output_firma1 = os.path.join(output_path, 'resized_firma1.png')
-            output_firma2 = os.path.join(output_path, 'resized_firma2.png')
-            output_logo = os.path.join(output_path, 'resized_logo.png')
+                # Output paths for resized images
+                output_firma1 = os.path.join(output_path, 'resized_firma1.png')
+                output_firma2 = os.path.join(output_path, 'resized_firma2.png')
+                output_logo = os.path.join(output_path, 'resized_logo.png')
 
-            # Save uploaded images to the specified folder
-            Image.open(firma1_image).save(firma1)
-            Image.open(firma2_image).save(firma2)
-            Image.open(logo_image).save(logo)
+                # Save uploaded images to the specified folder
+                Image.open(firma1_image).save(firma1)
+                Image.open(firma2_image).save(firma2)
+                Image.open(logo_image).save(logo)
 
-            # Resize images and save them with a white background
-            resize_image(firma1, output_firma1, desired_width_cm, desired_height_cm)
-            resize_image(firma2, output_firma2, desired_width_cm, desired_height_cm)
+                # Resize images and save them with a white background
+                resize_image(firma1, output_firma1, desired_width_cm, desired_height_cm)
+                resize_image(firma2, output_firma2, desired_width_cm, desired_height_cm)
 
-            # Resize the logo image and save it with a transparent background
-            resize_logo(logo, output_logo, logo_width, logo_height, transparent_bg=True)
+                # Resize the logo image and save it with a transparent background
+                resize_logo(logo, output_logo, logo_width, logo_height, transparent_bg=True)
 
-            # Create a copy of the original file
-            with file_formato01 as f:
-                content = f.read()
-                with open(output_file, "wb") as output_f:
-                        output_f.write(content)
+                # Create a copy of the original file
+                shutil.copy(file_formato01.name, output_file)
 
-            # Specifications for each sheet
-            sheet_parameters = [
-                {"name": "AREAS DE TRABAJO", "start_row": 8, "start_column": 2, "num_checkmarks": 10},
-                {"name": "AREA DE LA PLANTA", "start_row": 7, "start_column": 2, "num_checkmarks": 10},
-                {"name": "CUARTO FRIO", "start_row": 7, "start_column": 2, "num_checkmarks": 4},
-                {"name": "BAÑOS", "start_row": 6, "start_column": 2, "num_checkmarks": 6},
-                {"name": "TANQUES", "start_row": 7, "start_column": 2, "num_checkmarks": 8},
-                {"name": "OFICINA", "start_row": 7, "start_column": 2, "num_checkmarks": 10}
-            ]
+                # Specifications for each sheet
+                sheet_parameters = [
+                    {"name": "AREAS DE TRABAJO", "start_row": 8, "start_column": 2, "num_checkmarks": 10},
+                    {"name": "AREA DE LA PLANTA", "start_row": 7, "start_column": 2, "num_checkmarks": 10},
+                    {"name": "CUARTO FRIO", "start_row": 7, "start_column": 2, "num_checkmarks": 4},
+                    {"name": "BAÑOS", "start_row": 6, "start_column": 2, "num_checkmarks": 6},
+                    {"name": "TANQUES", "start_row": 7, "start_column": 2, "num_checkmarks": 8},
+                    {"name": "OFICINA", "start_row": 7, "start_column": 2, "num_checkmarks": 10}
+                ]
 
-            for params in sheet_parameters:
-                generate_worksheet(params["name"], params["start_row"], params["start_column"], params["num_checkmarks"], output_file, output_firma1, output_firma2, output_logo, current_date, end_date, include_weekends)
+                for params in sheet_parameters:
+                    generate_worksheet(params["name"], params["start_row"], params["start_column"], params["num_checkmarks"], output_file, output_firma1, output_firma2, output_logo, current_date, end_date, include_weekends)
 
-            st.success("Excel file generated successfully.")
-            st.text(f"Generated Excel file is stored at: {output_file}")
+                st.success("Excel file generated successfully.")
+                st.text(f"Generated Excel file is stored at: {output_file}")
+
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
