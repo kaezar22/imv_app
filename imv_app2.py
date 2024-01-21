@@ -102,12 +102,9 @@ if file_formato01:
     end_date = st.date_input("Elija la fecha final del formato", datetime.now() + timedelta(days=30))
     include_weekends = st.checkbox("DESEA INCLUIR FINES DE SEMANA", value=False)
 
-    # Step 5: Write the path for the output directory
-    output_directory = st.text_input("Enter the path for the output directory")
-
-    # Step 6: Create the output excel button
+    # Step 5: Create the output excel button
     if st.button("Generate Excel"):
-        if firma1_image and firma2_image and logo_image and output_directory:
+        if firma1_image and firma2_image and logo_image:
             try:
                 # Desired width and height for resizing images
                 desired_width_cm = 4.5
@@ -117,24 +114,20 @@ if file_formato01:
                 logo_width = 195
                 logo_height = 93
 
+                # Create a temporary directory to store the generated files
+                output_dir = os.path.join(st.config["tempDir"], "generated_files")
+                os.makedirs(output_dir, exist_ok=True)
+
                 # Output paths for images and Excel file
-                output_path = output_directory
-                output_file = os.path.join(output_path, 'formatted_data2.xlsx')
+                output_file = os.path.join(output_dir, 'formatted_data2.xlsx')
+                firma1 = os.path.join(output_dir, 'firma1.png')
+                firma2 = os.path.join(output_dir, 'firma2.png')
+                logo = os.path.join(output_dir, 'logo.png')
+                output_firma1 = os.path.join(output_dir, 'resized_firma1.png')
+                output_firma2 = os.path.join(output_dir, 'resized_firma2.png')
+                output_logo = os.path.join(output_dir, 'resized_logo.png')
 
-                # File paths for images
-                firma1 = os.path.join(output_path, 'firma1.png')
-                firma2 = os.path.join(output_path, 'firma2.png')
-                logo = os.path.join(output_path, 'logo.png')
-
-                # Output paths for resized images
-                output_firma1 = os.path.join(output_path, 'resized_firma1.png')
-                output_firma2 = os.path.join(output_path, 'resized_firma2.png')
-                output_logo = os.path.join(output_path, 'resized_logo.png')
-
-                # Ensure the output directory exists
-                os.makedirs(output_path, exist_ok=True)
-
-                # Save uploaded images to the working folder
+                # Save uploaded images to the temporary directory
                 Image.open(firma1_image).save(firma1)
                 Image.open(firma2_image).save(firma2)
                 Image.open(logo_image).save(logo)
@@ -163,7 +156,9 @@ if file_formato01:
                     generate_worksheet(params["name"], params["start_row"], params["start_column"], params["num_checkmarks"], output_file, output_firma1, output_firma2, output_logo, current_date, end_date, include_weekends)
 
                 st.success("Excel file generated successfully.")
-                st.text(f"Generated Excel file is stored at: {output_file}")
+
+                # Provide a download link for the generated Excel file
+                st.markdown(f"### [Download Excel File]({output_file})")
 
             except Exception as e:
                 st.error(f"An error occurred: {e}")
